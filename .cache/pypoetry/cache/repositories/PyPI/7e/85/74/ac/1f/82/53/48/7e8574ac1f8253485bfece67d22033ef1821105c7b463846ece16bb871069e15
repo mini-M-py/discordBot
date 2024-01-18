@@ -1,1 +1,0 @@
-9999999999{"name": "websocket", "version": "0.2.1", "summary": "Websocket implementation for gevent", "requires_dist": ["gevent", "greenlet"], "requires_python": null, "files": [{"file": "websocket-0.2.1.tar.gz", "hash": "sha256:42b506fae914ac5ed654e23ba9742e6a342b1a1c3eb92632b6166c65256469a4"}], "yanked": false, "_cache_version": "2.0.0"}
