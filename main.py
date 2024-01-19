@@ -13,6 +13,7 @@ import time
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
+responding = True
 
 
 
@@ -57,8 +58,6 @@ rules = """\n\nPlease read the rules.\n
 6 Keep conversation civil and constructive.
 7 Have fun and enjoy your the community!"""
 
-responding = True
-
 
 def update_encouragements(encouraging_message):
     encouraging_messages.append(encouraging_message)
@@ -89,11 +88,8 @@ async def on_message(message):
     quote = get_quote()
     await message.channel.send(quote)
 
-  if responding:
-    options = encouraging_messages
-    
-
-    if any(word in message.content for word in sad_words):
+  if any(word in message.content for word in sad_words):
+      options = encouraging_messages
       await message.channel.send(random.choice(options))
 
   if message.content.startswith('$new'):
