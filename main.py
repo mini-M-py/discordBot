@@ -3,7 +3,6 @@ import os
 import discord
 
 import requests
-from replit import db
 import json
 import random
 
@@ -58,26 +57,14 @@ rules = """\n\nPlease read the rules.\n
 6 Keep conversation civil and constructive.
 7 Have fun and enjoy your the community!"""
 
-if "responding" not in db.keys():
-  db["responding"] = True
+responding = True
 
 
 def update_encouragements(encouraging_message):
-  if 'encouragements' in db.keys():
-    encouragements = db['encouragements']
-    encouragements.append(encouraging_message)
-    db['encouragements'] = [encouraging_message]
-  else:
-    db['encoragements'] = [encouraging_message]
-
-
+    encouraging_messages.append(encouraging_message)
 def delete_encouragement(index):
-  encouragements = db['encouragements']
-  if len(encouragements) > index:
-    del encouragements[index]
-    db['encouragements'] = encouragements
-
-
+    encouraging_messages.pop(index)
+  
 def get_quote():
   response = requests.get("https://zenquotes.io/api/random")
   json_data = json.loads(response.text)
@@ -102,10 +89,9 @@ async def on_message(message):
     quote = get_quote()
     await message.channel.send(quote)
 
-  if db["responding"]:
+  if responding:
     options = encouraging_messages
-    if 'encouragements' in db.keys():
-      options = options + db['encouragements']
+    
 
     if any(word in message.content for word in sad_words):
       await message.channel.send(random.choice(options))
@@ -116,27 +102,21 @@ async def on_message(message):
     await message.channel.send("New encouraging message added")
 
   if message.content.startswith('$del'):
-    encouragements = []
-    if 'encouragements' in db.keys():
       index = int(message.content.split("$del", 1)[1])
       delete_encouragement(index)
-      encouragements = db['encouragements']
-    await message.channel.send(encouragements)
+      await message.channel.send('deleted')
 
   if message.content.startswith('$list'):
-    encouragements = []
-    if 'encouragements' in db.keys():
-      encouragements = db['encouragements']
-    await message.channel.send(encouragements)
+       await message.channel.send(encouraging_messages)
 
   if message.content.startswith('$responding'):
     value = message.content.split("$responding ", 1)[1]
 
     if value.lower() == "true":
-      db["responding"] = True
+      responding = True
       await message.channel.send("Responding is on ")
     else:
-      db["responding"] = False
+      responding = False
       await message.channel.send("Responding is off")
 
   if message.content.startswith('?'):
